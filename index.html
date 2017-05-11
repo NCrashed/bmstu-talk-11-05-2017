@@ -7,10 +7,11 @@
 		<title>reveal.js</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/white.css">
 
 		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<link rel="stylesheet" href="lib/css/github.css">
+		<link rel="stylesheet" href="css/style.css">
 
 		<!-- Printing and PDF exports -->
 		<script>
@@ -24,8 +25,218 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section><h2>
+					Гуща Антон aka NCrashed
+					<br>
+					<a href="#">https://github.com/NCrashed</a>
+				</h2></section>
+				<section>
+					<h2>HexResearch Team</h2>
+					<br>
+					<img src="img/hexresearch.png" style="width=300px;height:auto;">
+					<br>
+					<img src="img/ndm_systems.gif" style="width=300px">
+					<img src="img/CyberLeninka-logo.png" style="width:200px;margin-left:30px;">
+					<img src="img/aol-logo.png" style="width:300px;margin-left:30px;">
+				</section>
+				<section>
+					<h2>Почему Haskell?</h2>
+					<br>
+					<img src="img/haskell_logo.svg" style="width:250px;">
+				</section>
+				<section>
+					<h2>Общее</h2>
+					<ul>
+						<li>Строгая типизация</li>
+						<li>Компиляция в нативный код</li>
+						<li>Оптимизирующий open-source компилятор</li>
+						<li>Зрелый язык и коммьюнити</li>
+					</ul>
+				</section>
+				<section>
+					<img src="img/benchmark.svg" style="max-height=150%; max-width=150%; width: 60%;">
+				</section>
+				<section>
+					<h2>ФП</h2>
+					<ul>
+						<li>Предсказуемость чистых функций</li>
+						<li>Переиспользование кода через high order functions</li>
+						<li>Управление эффектами через функторы, аппликативы, монады</li>
+						<li>Алгебраические типы данных</li>
+					</ul>
+				</section>
+				<section>
+						<h3>Чистая функция</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+calculate :: Double -> Double
+<span class="fragment fade-in">calculate x = x ^ 2 + x</span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Грязная функция</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+calculate :: Double -> IO Double
+<span class="fragment fade-in">calculate x = do
+  rapeYourDog
+  return (x ^ 2 + x)</span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Комбинаторы</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+map :: (a -> a) -> [a] -> [a]
+<span class="fragment fade-in">map (* 2) [1, 2, 3] == <span class="fragment fade-in">[2, 4, 6]</span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Комбинаторы</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+filter :: (a -> Bool) -> [a] -> [a]
+<span class="fragment fade-in">filter (> 2) [1, 2, 3] == <span class="fragment fade-in">[3]</span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Комбинаторы</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+takeWhile :: (a -> Bool) -> [a] -> [a]
+<span class="fragment fade-in">takeWhile (<= 2) [1, 2, 3, 1] == <span class="fragment fade-in">[1, 2]</span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Комбинаторы</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+(.) :: (b -> c) -> (a -> b) -> a -> c
+<span class="fragment fade-in">(filter (<= 2) . map (* 2)) [1, 2, 1] == <span class="fragment fade-in">[2, 2]</span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Использование комбинаторов</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+primes = 2 : 3 : filter isPrime [5,7..]
+<span class="fragment fade-in">isPrime x = (
+    all (/= 0)
+  . map (rem x)
+  . takeWhile ((<= x) . (^2))
+  ) primes</span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Для чего нужны монады</h3>
+						<pre><code data-trim data-noescape class="bbcode haskell">
+data Ingredient = Flour | Sugar
+<span class="fragment fade-in">data Food = Pie | Bread</span>
+<span class="fragment fade-in">data Maybe a = Nothing | Just a</span>
+<span class="fragment fade-in">bake :: [Ingredient] -> Maybe Food</span>
+<span class="fragment fade-in">bake [Flour, Flour] = Just Bread </span>
+<span class="fragment fade-in">bake [Flour, Sugar] = Just Pie </span>
+<span class="fragment fade-in">bake _ = Nothing </span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Для чего нужны монады</h3>
+						<pre><code data-trim data-noescape class="bcode haskell" style="min-height=90%;">
+bake2 :: [Ingredient] -> Maybe (Food, Food)
+<span class="fragment fade-in">bake2 is = <span class="fragment fade-in">case bake (take 3 is) of
+    Nothing -> Nothing
+    Just f1 -> <span class="fragment fade-in">case bake (take 3 (drop 3 is)) of
+        Nothing -> Nothing
+        Just f2 -> Just (f1, f2)
+</span></span></span>
+
+						</code></pre>
+				</section>
+				<section>
+						<h3>Для чего нужны монады</h3>
+						<pre><code data-trim data-noescape class="bcode haskell" style="min-height=90%;">
+>>= :: Maybe a -> (a -> Maybe b) -> Maybe b
+<span class="fragment fade-in">bake2 is = bake (take 3 is) >>= (\f1 ->
+  <span class="fragment fade-in">bake (take 3 (drop 3 is)) >>= (\f2 ->
+    <span class="fragment fade-in">Just (f1, f2) ))</span></span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Для чего нужны монады</h3>
+						<pre><code data-trim data-noescape class="bcode haskell" style="min-height=90%;">
+bake2 is = do
+  f1 <- bake (take 3 is)
+  <span class="fragment fade-in">f2 <- bake (take 3 (drop 3 is))
+  <span class="fragment fade-in">Just (f1, f2)</span></span>
+						</code></pre>
+				</section>
+				<section>
+						<h3>Одна и та же запись для</h3>
+						<ul>
+							<li>Ввод вывод IO</li>
+							<li>Парсеры текста</li>
+							<li>Обработка ошибок (Maybe)</li>
+							<li>Работа с состоянием</li>
+							<li>Облачные вычисления</li>
+						</ul>
+				</section>
+				<section>
+					<h3>Парсеры</h3>
+					<pre><code data-trim data-noescape class="haskell" style="min-height=90%;">
+pKnock :: Parser AuthKnock
+pKnock = do
+  _ <- string "hexflood"
+  sep
+  v <- decimal :: Parser Int
+  when (v /= 1) $ fail "unsupported version"
+  sep
+  string "auth"
+  sep
+  _ <- string "sha256b16"
+  -- ..
+		    	</code></pre>
+				</section>
+				<section>
+					<h3>Облачные вычисления</h3>
+					<pre><code data-trim data-noescape class="bbcode haskell" style="min-height=90%;">
+atRemote something = do
+  teleport
+  r <- something
+  teleport
+  return r
+		    	</code></pre>
+				</section>
+				<section>
+					<h2>Haskell specific</h2>
+					<ul>
+						<li>Многопоточность через STM</li>
+						<li>Типизированные веб-сервисы и облака</li>
+						<li>Быстрое прототипирование</li>
+						<li>Легкость написания DSL</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Типизированный веб-сервис</h2>
+					<pre><code data-trim data-noescape class="haskell" style="min-height=90%;">
+type API = "register" :> ReqBody '[JSON] User :> Post '[JSON] UserId
+  :<|> "update" :> Capture "id" UserId  :> ReqBody '[JSON] User :> Put '[JSON] ()
+  :<|> "list" :> Get '[JSON] [User]
+		    	</code></pre>
+				</section>
+
+				<section>
+					<h2>Заходите к нам</h2>
+					<img src="img/ruhaskell.svg" style="width:300px">
+					<h3><a href="https://ruhaskell.org/">https://ruhaskell.org</a></h3>
+				</section>
+
+				<section>
+					<h2>Литература</h2>
+					<img src="img/learnhaskell.jpg" style="height:100%">
+				</section>
+
+				<section>
+					<h2>FP benchmark</h2>
+					<pre><code data-trim data-noescape class="haskell">
+primes = 2:3:filter isPrime [5,7..] :: [Int]
+isPrime x = all (/= 0) . map (rem x) . takeWhile ((<= x) . (^2)) $ primes
+main = print . length . takeWhile (<= 2^24) $ primes
+					</code></pre>
+				</section>
 			</div>
 		</div>
 
@@ -42,7 +253,9 @@
 					{ src: 'plugin/markdown/markdown.js' },
 					{ src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
+				],
+		    width: '80%',
+		    height: '100%'
 			});
 		</script>
 	</body>
